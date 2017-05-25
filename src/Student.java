@@ -12,12 +12,14 @@ public class Student {
     private ArrayList<Integer> courseInfo = new ArrayList<>();
 
 
+    //cat adkfalf
 
     Student(){}
 
     Student(String name,int StudnetID){
         this.name=name;
         this.StudentID=StudnetID;
+        credits++;
     }
 
     public String getName(){
