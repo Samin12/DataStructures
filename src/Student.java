@@ -1,81 +1,86 @@
+import java.sql.Time;
 import java.util.ArrayList;
-import java.util.*;
+
 /**
  * Created by samin on 5/23/2017.
  */
-public class Student {
-    private String name;
-    private int StudentID;
-    private static int credits;
+public class Student extends TimesOfDay {
+    protected String studentInfo;
+    protected String name;
+    protected ArrayList<Character> days = new ArrayList<Character>();
+    protected ArrayList<Integer> times = new ArrayList<Integer>();
 
-
-    private ArrayList<Integer> courseInfo = new ArrayList<>();
-
-
-    //cat adkfalf
+    protected ArrayList<TimesOfDay> studentTimes = new ArrayList<TimesOfDay>();
 
     Student(){}
 
-    Student(String name,int StudnetID){
-        this.name=name;
-        this.StudentID=StudnetID;
-        credits++;
-    }
+    Student(String studentInfo){
+        //(Mario<T[1100][2000]><H[2000]>)
+        this.name = studentInfo.substring(1,studentInfo.indexOf('<'));
 
-    public String getName(){
-        return this.name;
-    }
-    public int getStudentID(){
-        return this.StudentID;
-    }
-    public void setName(String name){
-        this.name=name;
-    }
-    public void setStudentID(int StudentID){
-        this.StudentID=StudentID;
-    }
+        //find better ways to get days
+        String[] splitStudentInfo  = studentInfo.split("\\W");
 
+        for (String c:splitStudentInfo){
+            if (c.length()==1){
+                //days.add(c.charAt(0));
+            }
+        }
 
-    public void sendNYUClassEmail(){
-        System.out.println("Sent NYU Classes Email to"+this.name);
-    }
-
-    public void enroll(int courseNum,int day, int start, int end,int credits)throws IllegalArgumentException {
-
-        this.credits+=credits;
-
-        courseInfo.add(courseNum);
-        courseInfo.add(day);
-
-
-
-        courseInfo.add(start);
-        courseInfo.add(end);
-
-        if (this.credits > 9) {
-            throw new IllegalArgumentException("Cannot take over 9 credits");
-        }else {
-            courseInfo.add(this.credits);
+        //gets times of days
+        for (Character day: days) {
+            studentTimes.add(new TimesOfDay(day,studentInfo));
         }
 
 
+    }
 
+    Student(String name, ArrayList days, ArrayList times){
+        this.name=name;
+        this.days = days;
+        this.times = times;
+    }
 
+    public ArrayList<Integer> getTimes() {
+        return times;
+    }
+
+    public ArrayList<Character> getDays() {
+        return days;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getTimeInfo() {
+        return super.getTimeInfo();
+    }
+
+    @Override
+    public char getDay() {
+        return super.getDay();
+    }
+
+    public ArrayList<TimesOfDay> getStudentTimes() {
+        return studentTimes;
+    }
+
+    public String getStudentInfo() {
+        return studentInfo;
     }
 
 
-    public static boolean isOverlapping(Date start1, Date end1, Date start2, Date end2) {
-        return !start1.after(end2) && !start2.after(end1);
+    public void setDays(ArrayList<Character> days) {
+        this.days = days;
     }
 
-
-
-
-    //incomplete
-    public void printSchedule(){
-
-
-
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public void setTimes(ArrayList<Integer> times) {
+        this.times = times;
+    }
 }
