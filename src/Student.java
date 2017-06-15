@@ -4,83 +4,72 @@ import java.util.ArrayList;
 /**
  * Created by samin on 5/23/2017.
  */
-public class Student extends TimesOfDay {
-    protected String studentInfo;
-    protected String name;
-    protected ArrayList<Character> days = new ArrayList<Character>();
-    protected ArrayList<Integer> times = new ArrayList<Integer>();
+public class Student {
+    protected String name="";
 
-    protected ArrayList<TimesOfDay> studentTimes = new ArrayList<TimesOfDay>();
+
+   // ArrayList<TimesOfDay> times = new ArrayList<TimesOfDay>();
+    protected ArrayList<String> times = new ArrayList<String>();
 
     Student(){}
-
     Student(String studentInfo){
-        //(Mario<T[1100][2000]><H[2000]>)
-        this.name = studentInfo.substring(1,studentInfo.indexOf('<'));
-
-        //find better ways to get days
-        String[] splitStudentInfo  = studentInfo.split("\\W");
-
-        for (String c:splitStudentInfo){
-            if (c.length()==1){
-                //days.add(c.charAt(0));
-            }
-        }
-
-        //gets times of days
-        for (Character day: days) {
-            studentTimes.add(new TimesOfDay(day,studentInfo));
-        }
-
-
+        this.name=" ";
+        this.times=timeInfoArray(studentInfo);
     }
-
-    Student(String name, ArrayList days, ArrayList times){
+    Student(String studnetInfo,String name){
         this.name=name;
-        this.days = days;
-        this.times = times;
+        this.times=timeInfoArray(studnetInfo);
     }
 
-    public ArrayList<Integer> getTimes() {
+
+    //getters and setters
+
+    public ArrayList<String> getTimes() {
         return times;
-    }
-
-    public ArrayList<Character> getDays() {
-        return days;
     }
 
     public String getName() {
         return name;
     }
 
-    @Override
-    public String getTimeInfo() {
-        return super.getTimeInfo();
-    }
-
-    @Override
-    public char getDay() {
-        return super.getDay();
-    }
-
-    public ArrayList<TimesOfDay> getStudentTimes() {
-        return studentTimes;
-    }
-
-    public String getStudentInfo() {
-        return studentInfo;
-    }
-
-
-    public void setDays(ArrayList<Character> days) {
-        this.days = days;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setTimes(ArrayList<Integer> times) {
+    public void setTimes(ArrayList<String> times) {
         this.times = times;
     }
+
+
+    //methods to get information
+    private String makeName(String studentInfo){
+        //Homer<M[1000]><W[1500]><F[1700]>
+        if (studentInfo.length()>3) {
+            String[] timeInfoArray2 = studentInfo.split("<");
+            name = timeInfoArray2[0];
+        }
+        return name;
+    }
+
+
+    private String[] timeInfo(String studentInfo){
+        String[] timeInfoArray = studentInfo.split("[\\p{javaWhitespace}<>]+");
+        return timeInfoArray;
+    }
+
+    private ArrayList<String> timeInfoArray(String studentInfo){
+
+        ArrayList<String> timesArray = new ArrayList<String>();
+
+        for (String e:timeInfo(studentInfo)) {
+            if (!e.contains(name)){
+                timesArray.add(e);
+            }
+        }
+        this.name=timesArray.get(0);
+        timesArray.remove(0);
+        return timesArray;
+    }
+
+
 }
