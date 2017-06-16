@@ -15,6 +15,7 @@ public class Student {
     Student(String studentInfo){
         this.name=" ";
         this.times=timeInfoArray(studentInfo);
+
     }
     Student(String studnetInfo,String name){
         this.name=name;

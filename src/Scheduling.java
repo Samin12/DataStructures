@@ -10,6 +10,7 @@ public class Scheduling {
     //[\\p{javaWhitespace}<>+]
     public static void main(String[] args) throws IOException {
 
+
         //takes in from the console
         Scanner in = new Scanner(System.in);
 
@@ -43,16 +44,10 @@ public class Scheduling {
         //now parse data from the expressions
         //get names
 
-
-        //System.out.println(Arrays.toString(allText.split("\\)")));
-
-
-
         //smaller data set question get one expression parsed by ( )
         String[] parenthesisSplitArray= allText.split("[\\p{javaWhitespace}()]+");
 
 
-       // System.out.println(Arrays.toString(parenthesisSplitArray));
 
         ArrayList<Student> studentArray = new ArrayList<Student>();
 
@@ -62,59 +57,101 @@ public class Scheduling {
         }
 
 
-
-        //printing the schedule
-        int[][] schedule = new int[13][5];
-
-        populate(studentArray,schedule);
-
-//        for (int c = 0; c < studentArray.size() ; c++) {
-//            for (String e:studentArray.get(c).getTimes()) {
-//                int tempCol = checkCol(e);
-//                for (Integer i:checkRows(e)) {
-//                    schedule[i][tempCol]++;
-//                }
-//            }
-//
-//        }
-
-
+        int[][] scheduleCounts = new int[13][5];
         //System.out.println(mostPopular(schedule));
-        printSchedule(schedule);
-        mostPopuarts(schedule);
-
-        //System.out.println(studentArray.get(2).getName());
-
-
-
-        String[][] scheduleWithNames = new String[13][5];
+        //Extra features
+        populate(studentArray,scheduleCounts);
+        printSchedule(scheduleCounts);
+        mostPopuarTimesByNumber(scheduleCounts);
 
 
-        for (int c = 0; c < studentArray.size() ; c++) {
 
-            for (String e:studentArray.get(c).getTimes()) {
-                int tempCol = checkCol(e);
-                for (Integer i:checkRows(e)) {
+        reset(scheduleCounts,studentArray);
 
-                }
-            }
+        int[][] scheduleCounts2 = new int[13][5];
+        populate(studentArray,scheduleCounts2);
+        printSchedule(scheduleCounts2);
+        mostPopuarTimesByNumber(scheduleCounts2);
 
-        }
 
-        System.out.println();
+        int[][] scheduleCounts3 = new int[13][5];
+        reset(scheduleCounts2,studentArray);
+        populate(studentArray,scheduleCounts3);
+        printSchedule(scheduleCounts3);
+        mostPopuarTimesByNumber(scheduleCounts3);
 
-        for (int row = 0; row <scheduleWithNames.length ; row++) {
-            for (int col = 0; col < scheduleWithNames[row].length; col++) {
-                System.out.print(scheduleWithNames[row][col]+"                   ");
-            }
-            System.out.println();
-        }
+        reset(scheduleCounts3,studentArray);
+
+
+
 
 
     }
 
+    public static void reset(int[][] scheduleCounts,ArrayList<Student> studentArray){
+        //get most popular time
 
-    public static void mostPopuarts(int[][] array){
+        System.out.println(mostPopularTimeRowCol(scheduleCounts));
+
+        ArrayList<Integer> indexPopular = mostPopularTimeRowCol(scheduleCounts);
+
+
+        String mostPopularTimeInfoString = colToTime(indexPopular.get(1))+"["+rowToTime(indexPopular.get(0))+"]";
+        System.out.println(mostPopularTimeInfoString);
+
+
+        //removes itesm from list
+        for (Student student:studentArray) {
+            if (student.getTimes().toString().contains(mostPopularTimeInfoString)){
+                System.out.println(student.getName());
+                student.setTimes(null);
+                student.setName(null);
+            }
+
+        }
+
+
+        Iterator<Student> iter = studentArray.iterator();
+        while (iter.hasNext())
+        {
+            Student user = iter.next();
+            if(user.name==null)
+            {
+                //Use iterator to remove this User object.
+                iter.remove();
+            }
+        }
+
+        //end
+    }
+
+    public static ArrayList<Integer> mostPopularTimeRowCol(int[][] array){
+        ArrayList<Integer> maxProperties = new ArrayList<Integer>();
+        int max1 = 0;
+
+        int max1Row=0;
+        int max1Col=0;
+
+        for (int row = 0; row < array.length; row++) {
+            for (int col = 0; col < array[row].length; col++) {
+                if (max1<array[row][col]){
+                    max1=array[row][col];
+                    max1Row=row;
+                    max1Col=col;
+                }
+            }
+        }
+
+        colToTime(max1Row);
+        maxProperties.add(max1Row);
+        maxProperties.add(max1Col);
+        return maxProperties;
+    }
+
+
+
+    //dosent do anything now
+    public static void mostPopuarTimesByNumber(int[][] array){
         ArrayList<Integer> maxProperties = new ArrayList<Integer>();
         int max1 = 0;
         int max2 = 0;
@@ -162,26 +199,26 @@ public class Scheduling {
         }
 
 
-        System.out.println("Most Popular Time: "+ colToTime(max1Col)+" at "+rowToTime(max1Row)+" Avaliable for "+max1+" students");
-        System.out.println("Second Most Popular Time: "+ colToTime(max2Col)+" at "+rowToTime(max2Row)+" Avaliable for "+max2+" students");
-        System.out.println("Thrid Most Popular Time: "+ colToTime(max3Col)+" at "+rowToTime(max3Row)+" Avaliable for "+max3+" students");
+        //System.out.println("Most Popular Time: "+ colToTime(max1Col)+" at "+rowToTime(max1Row)+" Avaliable for "+(max1)+" students");
+       // System.out.println("Second Most Popular Time: "+ colToTime(max2Col)+" at "+rowToTime(max2Row)+" Avaliable for "+max2+" students");
+       // System.out.println("Thrid Most Popular Time: "+ colToTime(max3Col)+" at "+rowToTime(max3Row)+" Avaliable for "+max3+" students");
     }
 
 
 
 
     public static void populate(ArrayList<Student> studentArray,int[][] schedule){
-        for  (int c = 0; c < studentArray.size() ; c++) {
-            for (String e:studentArray.get(c).getTimes()) {
-                int tempCol = checkCol(e);
-                for (Integer i:checkRows(e)) {
+
+
+        for (Student s:studentArray) {
+            for (String time:s.getTimes()) {
+                int tempCol = checkCol(time);
+                for (Integer i:checkRows(time)) {
                     schedule[i][tempCol]++;
                 }
             }
-
         }
     }
-
 
 
     public static int checkCol(String timeInfo){
@@ -195,7 +232,7 @@ public class Scheduling {
             return 3;
         }else if (timeInfo.contains("F")){
             return 4;
-        }else return 0;
+        }else return 5;
 
     }
 
